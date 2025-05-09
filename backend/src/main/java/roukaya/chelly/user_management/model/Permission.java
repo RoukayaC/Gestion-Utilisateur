@@ -1,4 +1,4 @@
-package com.example.usermanagement.model;
+package roukaya.chelly.usermanagement.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
