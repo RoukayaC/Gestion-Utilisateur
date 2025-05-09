@@ -1,7 +1,7 @@
-package com.example.usermanagement.repository;
+package roukaya.chelly.usermanagement.repository;
 
-import com.example.usermanagement.model.ActionHistory;
-import com.example.usermanagement.model.User;
+import roukaya.chelly.usermanagement.model.ActionHistory;
+import roukaya.chelly.usermanagement.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDateTime;
 import java.util.List;
