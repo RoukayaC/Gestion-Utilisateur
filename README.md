@@ -20,24 +20,6 @@
 - **MySQL** (production)
 - **Maven**
 
-## 📂 Project Structure
-backend/
-├── src/
-│   ├── main/
-│   │   ├── java/roukaya/chelly/user_management/
-│   │   │   ├── aspect/        # AOP for audit logging
-│   │   │   ├── config/        # Security and app configuration
-│   │   │   ├── controller/    # REST API endpoints
-│   │   │   ├── dto/           # Data transfer objects
-│   │   │   ├── exception/     # Custom exceptions
-│   │   │   ├── model/         # Entity models
-│   │   │   ├── repository/    # Data access layer
-│   │   │   ├── security/      # JWT implementation
-│   │   │   ├── service/       # Business logic
-│   │   ├── resources/
-│   │   │   ├── application.properties  # Application config
-└── pom.xml                    # Maven dependencies
-
 ## ✨ Features
 
 - **User authentication** with JWT
@@ -68,10 +50,10 @@ Development (default)
 
 spring.profiles.active=dev
 
-Production
+### Production
 spring.profiles.active=prod
 spring.datasource.url=jdbc:mysql://localhost:3306/usermanagement
 spring.datasource.username=root
 spring.datasource.password=root
 
-📖 API Endpoints
+### 📖 API Endpoints
