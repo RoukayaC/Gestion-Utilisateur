@@ -39,4 +39,6 @@
 1. Clone the repository
 2. Navigate to the backend directory
 3. Run the application:
-4. 
+   ```bash
+mvn spring-boot:run
+
