@@ -39,21 +39,4 @@
 1. Clone the repository
 2. Navigate to the backend directory
 3. Run the application:
-```bash
-mvn spring-boot:run
-
-The API will be available at http://localhost:8080
-
-Environment Configuration
-The application uses H2 in-memory database for development and MySQL for production.
-Development (default)
-
-spring.profiles.active=dev
-
-### Production
-spring.profiles.active=prod
-spring.datasource.url=jdbc:mysql://localhost:3306/usermanagement
-spring.datasource.username=root
-spring.datasource.password=root
-
-### 📖 API Endpoints
+4. 
