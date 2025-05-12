@@ -1,8 +1,8 @@
-package roukaya.chelly.usermanagement.config;
+package roukaya.chelly.user_management.config;
 
-import roukaya.chelly.usermanagement.security.JwtAuthenticationFilter;
-import roukaya.chelly.usermanagement.security.JwtAuthorizationFilter;
-import roukaya.chelly.usermanagement.service.CustomUserDetailsService;
+import roukaya.chelly.user_management.security.JwtAuthenticationFilter;
+import roukaya.chelly.user_management.security.JwtAuthorizationFilter;
+import roukaya.chelly.user_management.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

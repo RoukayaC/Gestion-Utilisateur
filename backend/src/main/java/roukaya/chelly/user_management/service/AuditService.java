@@ -1,9 +1,9 @@
-package roukaya.chelly.usermanagement.service;
+package roukaya.chelly.user_management.service;
 
-import roukaya.chelly.usermanagement.model.ActionHistory;
-import roukaya.chelly.usermanagement.model.User;
-import roukaya.chelly.usermanagement.repository.ActionHistoryRepository;
-import roukaya.chelly.usermanagement.repository.UserRepository;
+import roukaya.chelly.user_management.model.ActionHistory;
+import roukaya.chelly.user_management.model.User;
+import roukaya.chelly.user_management.repository.ActionHistoryRepository;
+import roukaya.chelly.user_management.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

@@ -1,10 +1,10 @@
-package roukaya.chelly.usermanagement.service;
+package roukaya.chelly.user_management.service;
 
-import roukaya.chelly.usermanagement.exception.ResourceNotFoundException;
-import roukaya.chelly.usermanagement.model.Permission;
-import roukaya.chelly.usermanagement.model.Role;
-import roukaya.chelly.usermanagement.repository.PermissionRepository;
-import roukaya.chelly.usermanagement.repository.RoleRepository;
+import roukaya.chelly.user_management.exception.ResourceNotFoundException;
+import roukaya.chelly.user_management.model.Permission;
+import roukaya.chelly.user_management.model.Role;
+import roukaya.chelly.user_management.repository.PermissionRepository;
+import roukaya.chelly.user_management.repository.RoleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

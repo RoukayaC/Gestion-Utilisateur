@@ -1,7 +1,7 @@
-package roukaya.chelly.usermanagement.security;
+package roukaya.chelly.user_management.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import roukaya.chelly.usermanagement.dto.LoginRequest;
+import roukaya.chelly.user_management.dto.LoginRequest;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

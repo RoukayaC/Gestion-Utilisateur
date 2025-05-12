@@ -1,6 +1,6 @@
-package roukaya.chelly.usermanagement.repository;
+package roukaya.chelly.user_management.repository;
 
-import roukaya.chelly.usermanagement.model.Permission;
+import roukaya.chelly.user_management.model.Permission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

@@ -1,6 +1,6 @@
-package roukaya.chelly.usermanagement.aspect;
+package roukaya.chelly.user_management.aspect;
 
-import roukaya.chelly.usermanagement.service.AuditService;
+import roukaya.chelly.user_management.service.AuditService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,7 +17,7 @@ public class AuditAspect {
         this.auditService = auditService;
     }
 
-    @Pointcut("execution(* roukaya.chelly.usermanagement.controller.*.*(..)) && !execution(* roukaya.chelly.usermanagement.controller.AuditController.*(..))")
+    @Pointcut("execution(* roukaya.chelly.user_management.controller.*.*(..)) && !execution(* roukaya.chelly.user_management.controller.AuditController.*(..))")
     public void controllerMethods() {}
 
     @AfterReturning(pointcut = "controllerMethods()", returning = "result")

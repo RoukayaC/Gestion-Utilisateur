@@ -1,4 +1,4 @@
-package roukaya.chelly.usermanagement.security;
+package roukaya.chelly.user_management.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

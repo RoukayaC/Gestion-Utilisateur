@@ -1,9 +1,9 @@
-package roukaya.chelly.usermanagement.controller;
+package roukaya.chelly.user_management.controller;
 
-import roukaya.chelly.usermanagement.dto.CreateUserRequest;
-import roukaya.chelly.usermanagement.dto.UserDto;
-import roukaya.chelly.usermanagement.service.AuditService;
-import roukaya.chelly.usermanagement.service.UserService;
+import roukaya.chelly.user_management.dto.CreateUserRequest;
+import roukaya.chelly.user_management.dto.UserDto;
+import roukaya.chelly.user_management.service.AuditService;
+import roukaya.chelly.user_management.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

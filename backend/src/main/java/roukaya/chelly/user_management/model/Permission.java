@@ -1,4 +1,4 @@
-package roukaya.chelly.usermanagement.model;
+package roukaya.chelly.user_management.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

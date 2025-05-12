@@ -1,7 +1,7 @@
-package roukaya.chelly.usermanagement.controller;
+package roukaya.chelly.user_management.controller;
 
-import roukaya.chelly.usermanagement.model.Role;
-import roukaya.chelly.usermanagement.service.RoleService;
+import roukaya.chelly.user_management.model.Role;
+import roukaya.chelly.user_management.service.RoleService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

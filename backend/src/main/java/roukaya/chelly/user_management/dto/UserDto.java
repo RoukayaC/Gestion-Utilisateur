@@ -1,4 +1,4 @@
-package roukaya.chelly.usermanagement.dto;
+package roukaya.chelly.user_management.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

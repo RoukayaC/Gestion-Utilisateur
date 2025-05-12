@@ -1,9 +1,9 @@
-package roukaya.chelly.usermanagement.service;
+package roukaya.chelly.user_management.service;
 
-import roukaya.chelly.usermanagement.model.Permission;
-import roukaya.chelly.usermanagement.model.Role;
-import roukaya.chelly.usermanagement.model.User;
-import roukaya.chelly.usermanagement.repository.UserRepository;
+import roukaya.chelly.user_management.model.Permission;
+import roukaya.chelly.user_management.model.Role;
+import roukaya.chelly.user_management.model.User;
+import roukaya.chelly.user_management.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

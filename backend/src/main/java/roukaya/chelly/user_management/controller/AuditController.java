@@ -1,7 +1,7 @@
-package roukaya.chelly.usermanagement.controller;
+package roukaya.chelly.user_management.controller;
 
-import roukaya.chelly.usermanagement.model.ActionHistory;
-import roukaya.chelly.usermanagement.service.AuditService;
+import roukaya.chelly.user_management.model.ActionHistory;
+import roukaya.chelly.user_management.service.AuditService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

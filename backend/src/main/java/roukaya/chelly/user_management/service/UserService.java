@@ -1,12 +1,12 @@
-package roukaya.chelly.usermanagement.service;
+package roukaya.chelly.user_management.service;
 
-import roukaya.chelly.usermanagement.dto.CreateUserRequest;
-import roukaya.chelly.usermanagement.dto.UserDto;
-import roukaya.chelly.usermanagement.exception.ResourceNotFoundException;
-import roukaya.chelly.usermanagement.model.Role;
-import roukaya.chelly.usermanagement.model.User;
-import roukaya.chelly.usermanagement.repository.RoleRepository;
-import roukaya.chelly.usermanagement.repository.UserRepository;
+import roukaya.chelly.user_management.dto.CreateUserRequest;
+import roukaya.chelly.user_management.dto.UserDto;
+import roukaya.chelly.user_management.exception.ResourceNotFoundException;
+import roukaya.chelly.user_management.model.Role;
+import roukaya.chelly.user_management.model.User;
+import roukaya.chelly.user_management.repository.RoleRepository;
+import roukaya.chelly.user_management.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
