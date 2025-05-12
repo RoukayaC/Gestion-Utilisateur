@@ -1,11 +1,11 @@
-User Management System Backend
-A Spring Boot REST API for managing users, roles, and permissions with audit logging functionality.
-Technologies Used
+User Management System
+A comprehensive web application for managing users, roles, and permissions with audit logging capabilities.
+Project Description
+This application provides a complete user management solution with role-based access control (RBAC) and action auditing. It allows administrators to:
 
-Java 17
-Spring Boot 3.4.5
-Spring Security with JWT
-Spring Data JPA
-H2 Database (development)
-MySQL (production)
-Maven
+Manage users (create, view, update, delete, activate/deactivate)
+Define roles with specific permissions
+Assign roles to users
+Monitor user actions through a detailed audit log
+
+The system implements secure authentication with JWT tokens and provides a responsive user interface for all management operations.
