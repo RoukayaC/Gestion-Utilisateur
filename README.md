@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # User Management System
 
 A comprehensive user management system with role-based access control and action logging.
