@@ -21,3 +21,57 @@
 - **Maven**
 
 ## 📂 Project Structure
+backend/
+├── src/
+│   ├── main/
+│   │   ├── java/roukaya/chelly/user_management/
+│   │   │   ├── aspect/        # AOP for audit logging
+│   │   │   ├── config/        # Security and app configuration
+│   │   │   ├── controller/    # REST API endpoints
+│   │   │   ├── dto/           # Data transfer objects
+│   │   │   ├── exception/     # Custom exceptions
+│   │   │   ├── model/         # Entity models
+│   │   │   ├── repository/    # Data access layer
+│   │   │   ├── security/      # JWT implementation
+│   │   │   ├── service/       # Business logic
+│   │   ├── resources/
+│   │   │   ├── application.properties  # Application config
+└── pom.xml                    # Maven dependencies
+
+## ✨ Features
+
+- **User authentication** with JWT
+- **Role-based access control**
+- **Permission management**
+- **Audit logging** of user actions
+- **CRUD operations** for all entities
+
+## 🚀 Setup and Running
+
+### Prerequisites
+- JDK 17
+- Maven
+
+### Development Mode
+
+1. Clone the repository
+2. Navigate to the backend directory
+3. Run the application:
+```bash
+mvn spring-boot:run
+
+The API will be available at http://localhost:8080
+
+Environment Configuration
+The application uses H2 in-memory database for development and MySQL for production.
+Development (default)
+
+spring.profiles.active=dev
+
+Production
+spring.profiles.active=prod
+spring.datasource.url=jdbc:mysql://localhost:3306/usermanagement
+spring.datasource.username=root
+spring.datasource.password=root
+
+📖 API Endpoints
