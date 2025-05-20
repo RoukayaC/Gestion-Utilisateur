@@ -29,6 +29,9 @@ public class JwtUtils {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
+        System.out.println("Generating token for user: " + userPrincipal.getUsername());
+        System.out.println("User authorities: " + authorities);
+
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
                 .claim("authorities", authorities)
@@ -60,6 +63,7 @@ public class JwtUtils {
                 .parseClaimsJws(authToken);
             return true;
         } catch (MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+            System.err.println("Invalid JWT token: " + e.getMessage());
             return false;
         }
     }
