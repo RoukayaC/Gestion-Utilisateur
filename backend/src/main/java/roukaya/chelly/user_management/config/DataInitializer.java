@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Configuration
 public class DataInitializer {
@@ -68,7 +69,7 @@ public class DataInitializer {
                 userRole.setName("USER");
                 userRole.setDescription("Regular user with limited permissions");
 
-                // Add only view permissions for users
+              
                 Set<Permission> userPermissions = new HashSet<>();
                 permissionRepository.findByName("VIEW_USERS").ifPresent(userPermissions::add);
                 userRole.setPermissions(userPermissions);
@@ -76,20 +77,25 @@ public class DataInitializer {
                 roleRepository.save(userRole);
             }
 
-            // Create admin user if no users exist
-            if (userRepository.count() == 0) {
-                Role adminRole = roleRepository.findByName("ADMIN")
-                        .orElseThrow(() -> new RuntimeException("Admin role not found"));
+           // Create admin user if no users exist
+if (userRepository.count() == 0) {
+    Role adminRole = roleRepository.findByName("ADMIN")
+            .orElseThrow(() -> new RuntimeException("Admin role not found"));
 
-                User adminUser = new User();
-                adminUser.setName("Admin User");
-                adminUser.setEmail("roukaya@gmail.com");
-                adminUser.setPassword(passwordEncoder.encode("roukaya2000"));
-                adminUser.setActive(true);
-                adminUser.setRoles(Set.of(adminRole));
-
-                userRepository.save(adminUser);
-            }
+    User adminUser = new User();
+    adminUser.setName("Admin User");
+    adminUser.setEmail("roukaya@gmail.com");
+    adminUser.setPassword(passwordEncoder.encode("roukaya2000"));
+    adminUser.setActive(true);
+    adminUser.setRoles(Set.of(adminRole));
+    userRepository.save(adminUser);
+    
+    System.out.println("Admin user created with email: " + adminUser.getEmail());
+    System.out.println("Admin permissions: " + 
+        adminRole.getPermissions().stream()
+            .map(Permission::getName)
+            .collect(Collectors.joining(", ")));
+}
         };
     }
 }
