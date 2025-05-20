@@ -1,1 +1,61 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Dashboard</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <h2>Welcome, {{ currentUser?.name || 'User' }}!</h2>
+      <p>This is the user management system dashboard.</p>
+
+      <div *ngIf="isLoading" class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span>Loading dashboard data...</span>
+      </div>
+
+      <div *ngIf="!isLoading" class="stats-container">
+        <div class="stat-card">
+          <mat-icon>people</mat-icon>
+          <div class="stat-info">
+            <span class="stat-title">Users</span>
+            <span class="stat-value">{{ userCount }}</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <mat-icon>admin_panel_settings</mat-icon>
+          <div class="stat-info">
+            <span class="stat-title">Roles</span>
+            <span class="stat-value">{{ roleCount }}</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <mat-icon>security</mat-icon>
+          <div class="stat-info">
+            <span class="stat-title">Permissions</span>
+            <span class="stat-value">{{ permissionCount }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoading && isAdmin" class="recent-activity">
+        <h3>Recent Activity</h3>
+
+        <mat-list>
+          <mat-list-item *ngFor="let activity of recentActivities">
+            <mat-icon matListItemIcon>history</mat-icon>
+            <div matListItemTitle>{{ activity.action }}</div>
+            <div matListItemLine>
+              By {{ activity.user.name }} - {{ activity.date | date:'medium' }}
+            </div>
+          </mat-list-item>
+
+          <mat-list-item *ngIf="recentActivities.length === 0">
+            <div matListItemTitle>No recent activity</div>
+          </mat-list-item>
+        </mat-list>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
