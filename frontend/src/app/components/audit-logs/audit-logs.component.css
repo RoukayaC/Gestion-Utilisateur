@@ -1,0 +1,66 @@
+.audit-logs-container {
+  padding: 20px;
+}
+
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.filter-form mat-form-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 8px;
+}
+
+mat-divider {
+  margin: 20px 0;
+}
+
+.search-container {
+  margin-bottom: 20px;
+}
+
+.search-container mat-form-field {
+  width: 100%;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-column-id {
+  width: 70px;
+}
+
+.mat-column-date {
+  width: 200px;
+}
+
+.mat-column-user {
+  width: 200px;
+}
+
+.mat-column-action {
+  width: 150px;
+}
