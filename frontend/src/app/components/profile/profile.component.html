@@ -1,1 +1,87 @@
-<p>profile works!</p>
+<div class="profile-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>My Profile</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div *ngIf="isLoading" class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span>Loading profile...</span>
+      </div>
+
+      <div *ngIf="!isLoading && user" class="profile-details">
+        <div class="profile-avatar">
+          <mat-icon class="avatar-icon">account_circle</mat-icon>
+        </div>
+
+        <mat-list>
+          <mat-list-item>
+            <span matListItemTitle>Name</span>
+            <span matListItemLine>{{ user.name }}</span>
+          </mat-list-item>
+
+          <mat-list-item>
+            <span matListItemTitle>Email</span>
+            <span matListItemLine>{{ user.email }}</span>
+          </mat-list-item>
+
+          <mat-list-item>
+            <span matListItemTitle>Roles</span>
+            <span matListItemLine>{{ getRoleNames() }}</span>
+          </mat-list-item>
+
+          <mat-list-item>
+            <span matListItemTitle>Status</span>
+            <span matListItemLine>
+              <mat-chip [color]="user.active ? 'primary' : 'warn'" selected>
+                {{ user.active ? "Active" : "Inactive" }}
+              </mat-chip>
+            </span>
+          </mat-list-item>
+        </mat-list>
+      </div>
+
+      <mat-divider class="my-3"></mat-divider>
+
+      <h3>Change Password</h3>
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="password-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Current Password</mat-label>
+          <input matInput type="password" formControlName="currentPassword" placeholder="Enter current password">
+          <mat-error *ngIf="passwordForm.get('currentPassword')?.hasError('required')">
+            Current password is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>New Password</mat-label>
+          <input matInput type="password" formControlName="newPassword" placeholder="Enter new password">
+          <mat-error *ngIf="passwordForm.get('newPassword')?.hasError('required')">
+            New password is required
+          </mat-error>
+          <mat-error *ngIf="passwordForm.get('newPassword')?.hasError('minlength')">
+            Password must be at least 6 characters
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Confirm New Password</mat-label>
+          <input matInput type="password" formControlName="confirmPassword" placeholder="Confirm new password">
+          <mat-error *ngIf="passwordForm.get('confirmPassword')?.hasError('required')">
+            Please confirm your password
+          </mat-error>
+          <mat-error *ngIf="passwordForm.get('confirmPassword')?.hasError('passwordMismatch')">
+            Passwords do not match
+          </mat-error>
+        </mat-form-field>
+
+        <div class="password-form-actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="passwordForm.invalid">
+            Change Password
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
