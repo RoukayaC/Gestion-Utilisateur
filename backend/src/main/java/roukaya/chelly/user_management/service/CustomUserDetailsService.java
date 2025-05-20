@@ -47,19 +47,24 @@ public class CustomUserDetailsService implements UserDetailsService {
         );
     }
 
-    private Collection<? extends GrantedAuthority> getAuthorities(User user) {
-        List<GrantedAuthority> authorities = new ArrayList<>();
+  private Collection<? extends GrantedAuthority> getAuthorities(User user) {
+    List<GrantedAuthority> authorities = new ArrayList<>();
+    
+    System.out.println("Loading authorities for user: " + user.getEmail());
+    
+    // Add role authorities
+    for (Role role : user.getRoles()) {
+        String roleAuthority = "ROLE_" + role.getName();
+        System.out.println("Adding role authority: " + roleAuthority);
+        authorities.add(new SimpleGrantedAuthority(roleAuthority));
         
-        // Add role authorities
-        for (Role role : user.getRoles()) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
-            
-            // Add permission authorities
-            for (Permission permission : role.getPermissions()) {
-                authorities.add(new SimpleGrantedAuthority(permission.getName()));
-            }
+        // Add permission authorities
+        for (Permission permission : role.getPermissions()) {
+            System.out.println("Adding permission authority: " + permission.getName());
+            authorities.add(new SimpleGrantedAuthority(permission.getName()));
         }
-        
-        return authorities;
     }
+    
+    return authorities;
+}
 }

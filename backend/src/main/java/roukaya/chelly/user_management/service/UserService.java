@@ -7,6 +7,9 @@ import roukaya.chelly.user_management.model.Role;
 import roukaya.chelly.user_management.model.User;
 import roukaya.chelly.user_management.repository.RoleRepository;
 import roukaya.chelly.user_management.repository.UserRepository;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +36,14 @@ public class UserService {
     }
 
     public List<UserDto> getAllUsers() {
-        return userRepository.findAll().stream()
+        List<User> allUsers = userRepository.findAll();
+        System.out.println("Found " + allUsers.size() + " users in database");
+        allUsers.forEach(user -> {
+            System.out.println("User: " + user.getEmail() + ", Roles: " + 
+                user.getRoles().stream().map(Role::getName).collect(Collectors.joining(", ")));
+        });
+        
+        return allUsers.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
@@ -49,9 +59,21 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
         return convertToDto(user);
     }
+    
+    public boolean emailExists(String email) {
+        return userRepository.existsByEmail(email);
+    }
 
     @Transactional
     public UserDto createUser(CreateUserRequest request) {
+        // Add debug output
+        System.out.println("Creating user with email: " + request.getEmail());
+        if (request.getRoles() != null) {
+            System.out.println("Roles requested: " + request.getRoles());
+        } else {
+            System.out.println("No roles specified, will assign default USER role");
+        }
+        
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email is already in use");
         }
@@ -71,7 +93,6 @@ public class UserService {
                 roles.add(role);
             }
         } else {
-            // Assign default role if none provided
             Role defaultRole = roleRepository.findByName("USER")
                     .orElseThrow(() -> new ResourceNotFoundException("Default role not found"));
             roles.add(defaultRole);
@@ -79,7 +100,15 @@ public class UserService {
         user.setRoles(roles);
 
         User savedUser = userRepository.save(user);
-        auditService.logAction("USER_CREATED", "User created: " + user.getEmail());
+        
+        System.out.println("User saved with ID: " + savedUser.getId() + " and roles: " + 
+            savedUser.getRoles().stream().map(Role::getName).collect(Collectors.joining(", ")));
+            
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && 
+            !authentication.getPrincipal().equals("anonymousUser")) {
+            auditService.logAction("USER_CREATED", "User created: " + user.getEmail());
+        }
         
         return convertToDto(savedUser);
     }
@@ -89,7 +118,6 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
-        // Check if email is being changed and if it's already in use
         if (!user.getEmail().equals(request.getEmail()) && userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email is already in use");
         }
@@ -97,12 +125,10 @@ public class UserService {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         
-        // Update password if provided
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
 
-        // Update roles if provided
         if (request.getRoles() != null && !request.getRoles().isEmpty()) {
             Set<Role> roles = new HashSet<>();
             for (String roleName : request.getRoles()) {
