@@ -27,7 +27,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('VIEW_USERS')")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserDto> users = userService.getAllUsers();
-        auditService.logAction("USERS_VIEWED", "List of users viewed");
+        //auditService.logAction("USERS_VIEWED", "List of users viewed");
         return ResponseEntity.ok(users);
     }
 

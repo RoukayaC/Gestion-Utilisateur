@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -34,6 +35,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+        System.out.println("AuthController.authenticateUser called with email: " + loginRequest.getEmail());
+        
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
         );
@@ -50,7 +53,21 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody CreateUserRequest signUpRequest) {
-        UserDto userDto = userService.createUser(signUpRequest);
-        return ResponseEntity.ok(userDto);
+        try {
+            System.out.println("Received registration request for: " + signUpRequest.getEmail());
+            // Check if email already exists
+            if (userService.emailExists(signUpRequest.getEmail())) {
+                System.out.println("Registration failed: Email already exists: " + signUpRequest.getEmail());
+                return ResponseEntity.badRequest().body("Email is already in use");
+            }
+            
+            UserDto userDto = userService.createUser(signUpRequest);
+            System.out.println("User successfully registered: " + userDto.getEmail() + " with ID: " + userDto.getId());
+            return ResponseEntity.ok(userDto);
+        } catch (Exception e) {
+            System.err.println("Registration error: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Registration failed: " + e.getMessage());
+        }
     }
 }
