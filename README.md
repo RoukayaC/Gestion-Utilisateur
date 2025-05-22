@@ -1,29 +1,42 @@
-# User Management System
+# Système de Gestion des Utilisateurs
 
-A comprehensive user management system with role-based access control and action logging.
+## Description du projet
 
-## Description
+Ce projet est une **application web full-stack** de gestion des utilisateurs, des rôles et des permissions, avec journalisation des actions (audit).  
+- **Backend** : API REST sécurisée (Spring Boot, Spring Security, JWT)  
+- **Frontend** : Application monopage en Angular 19 avec Angular Material  
+- **Fonctionnalités** :
+  - Authentification / inscription / JWT
+  - Gestion CRUD des utilisateurs (activation / désactivation)
+  - Gestion CRUD des rôles et affectation de permissions
+  - Gestion CRUD des permissions
+  - Journalisation (audit) de toutes les actions critiques
+  - Interface adaptative selon le rôle (`ADMIN` vs `USER`)
 
-This application provides a complete solution for user management with the following features:
+## Technologies utilisées
 
-- User authentication and authorization
-- Role and permission management
-- Audit logging of user actions
-- Comprehensive CRUD operations
+| Côté serveur            | Côté client               | Base de données  | Sécurité / Auth         |
+|-------------------------|---------------------------|------------------|-------------------------|
+| • Java 17               | • Angular 19              | • H2 (dev)       | • Spring Security      |
+| • Spring Boot 3         | • Angular Material        | • MySQL (prod)   | • JWT (io.jsonwebtoken) |
+| • Spring Data JPA       | • RxJS                    |                  |                         |
+| • Spring Validation     | • TypeScript 5            |                  |                         |
+| • Lombok                |                           |                  |                         |
+| • Maven                 | • Node.js 18+ / NPM       |                  |                         |
 
-## Technologies Used
+## Prérequis
 
-### Backend
+- **Java 17** (JDK)  
+- **Maven 3.6+**  
+- **Node.js 18+** & **npm**  
+- **Angular CLI 19+** (pour `ng serve`)  
+- (Optionnel) **Docker** & **Docker Compose**
 
+---
 
+## Installation et exécution sans Docker
 
-### Frontend
-
-## Installation and Setup
-
-### Prerequisites
-
-
-### Local Development
-
-
+### 1. Cloner le dépôt
+```bash
+git clone https://github.com/votre-organisation/user-management.git
+cd user-management
