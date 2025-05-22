@@ -124,7 +124,7 @@ export class UserDialogComponent implements OnInit {
       name: [this.data.user?.name || '', Validators.required],
       email: [this.data.user?.email || '', [Validators.required, Validators.email]],
       password: ['', this.data.isEdit ? [] : [Validators.required, Validators.minLength(6)]],
-      roles: [this.data.user?.roles?.map(role => role.name) || ['USER']]
+      roles: [ this.data.user?.roles || ['USER'] ]
     });
   }
 

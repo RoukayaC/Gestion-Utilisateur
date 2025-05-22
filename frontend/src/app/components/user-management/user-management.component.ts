@@ -1,4 +1,4 @@
-// frontend/src/app/components/user-management/user-management.component.ts
+
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
@@ -17,8 +17,8 @@ import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 
 import { MatTableDataSource } from '@angular/material/table';
 import { User } from '../../models/user.model';
-import { UserService } from '../../services/user.service';
 import { Role } from '../../models/role.model';
+import { UserService } from '../../services/user.service';
 import { RoleService } from '../../services/role.service';
 import { UserDialogComponent } from './user-dialog.component';
 import { ConfirmationDialogComponent } from '../../shared/confirmation-dialog/confirmation-dialog.component';
@@ -68,14 +68,14 @@ export class UserManagementComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {}
 
-  loadRoles(): void {
+  private loadRoles(): void {
     this.roleService.getAllRoles().subscribe({
-      next: r => this.roles = r,
+      next: roles => this.roles = roles,
       error: () => {}
     });
   }
 
-  loadUsers(): void {
+   loadUsers(): void {
     this.isLoading = true;
     this.userService.getAllUsers().subscribe({
       next: users => {
@@ -97,8 +97,10 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
   }
 
-  getRoleNames(roles: Role[]): string {
-    return roles.map(r => r.name).join(', ') || 'None';
+  getRoleNames(roles: string[]): string {
+    return roles.length
+      ? roles.join(', ')
+      : 'None';
   }
 
   openCreateUserDialog(): void {
@@ -140,8 +142,8 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   toggleUserStatus(user: User): void {
     this.userService.toggleUserActive(user.id!).subscribe({
       next: updated => {
-        const list = this.dataSource.data.map(u => u.id === updated.id ? updated : u);
-        this.dataSource.data = list;
+        const all = this.dataSource.data.map(u => u.id === updated.id ? updated : u);
+        this.dataSource.data = all;
         this.snackBar.open(`User ${updated.active ? 'activated' : 'deactivated'}`, 'Close', { duration: 3000 });
       },
       error: () => {
