@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, NgIf, NgForOf, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -19,9 +19,6 @@ import { ActionHistory } from '../../models/action-history.model';
   standalone: true,
   imports: [
     CommonModule,
-    NgIf,
-    NgForOf,
-    DatePipe,
     MatCardModule,
     MatIconModule,
     MatProgressSpinnerModule,
@@ -74,7 +71,7 @@ export class DashboardComponent implements OnInit {
 
         this.isLoading = false;
       },
-      error: (err) => {
+      error: err => {
         console.error('Error loading dashboard data', err);
         this.isLoading = false;
       }
