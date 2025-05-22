@@ -1,30 +1,32 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule, NgIf, NgForOf, DatePipe } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatListModule } from '@angular/material/list';
+import { forkJoin } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { RoleService } from '../../services/role.service';
 import { PermissionService } from '../../services/permission.service';
 import { AuditService } from '../../services/audit.service';
 import { ActionHistory } from '../../models/action-history.model';
-import { forkJoin } from 'rxjs';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatListModule } from '@angular/material/list';
-import { CommonModule, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
+  standalone: true,
   imports: [
     CommonModule,
+    NgIf,
+    NgForOf,
     DatePipe,
     MatCardModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatListModule,
+    MatListModule
   ],
-  standalone: true,
 })
 export class DashboardComponent implements OnInit {
   currentUser: any;
@@ -54,30 +56,28 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  loadDashboardData(): void {
+  private loadDashboardData(): void {
     forkJoin({
       users: this.userService.getAllUsers(),
       roles: this.roleService.getAllRoles(),
       permissions: this.permissionService.getAllPermissions(),
       activities: this.auditService.getAllActions(),
     }).subscribe({
-      next: (results) => {
-        this.userCount = results.users.length;
-        this.roleCount = results.roles.length;
-        this.permissionCount = results.permissions.length;
+      next: ({ users, roles, permissions, activities }) => {
+        this.userCount = users.length;
+        this.roleCount = roles.length;
+        this.permissionCount = permissions.length;
 
-        this.recentActivities = results.activities
-          .sort(
-            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-          )
+        this.recentActivities = activities
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
           .slice(0, 5);
 
         this.isLoading = false;
       },
-      error: (error) => {
-        console.error('Error loading dashboard data:', error);
+      error: (err) => {
+        console.error('Error loading dashboard data', err);
         this.isLoading = false;
-      },
+      }
     });
   }
 }
