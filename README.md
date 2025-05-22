@@ -1,42 +1,54 @@
 # Système de Gestion des Utilisateurs
 
-## Description du projet
+## 🔍 Description
 
-Ce projet est une **application web full-stack** de gestion des utilisateurs, des rôles et des permissions, avec journalisation des actions (audit).  
-- **Backend** : API REST sécurisée (Spring Boot, Spring Security, JWT)  
-- **Frontend** : Application monopage en Angular 19 avec Angular Material  
-- **Fonctionnalités** :
-  - Authentification / inscription / JWT
-  - Gestion CRUD des utilisateurs (activation / désactivation)
-  - Gestion CRUD des rôles et affectation de permissions
-  - Gestion CRUD des permissions
-  - Journalisation (audit) de toutes les actions critiques
-  - Interface adaptative selon le rôle (`ADMIN` vs `USER`)
-
-## Technologies utilisées
-
-| Côté serveur            | Côté client               | Base de données  | Sécurité / Auth         |
-|-------------------------|---------------------------|------------------|-------------------------|
-| • Java 17               | • Angular 19              | • H2 (dev)       | • Spring Security      |
-| • Spring Boot 3         | • Angular Material        | • MySQL (prod)   | • JWT (io.jsonwebtoken) |
-| • Spring Data JPA       | • RxJS                    |                  |                         |
-| • Spring Validation     | • TypeScript 5            |                  |                         |
-| • Lombok                |                           |                  |                         |
-| • Maven                 | • Node.js 18+ / NPM       |                  |                         |
-
-## Prérequis
-
-- **Java 17** (JDK)  
-- **Maven 3.6+**  
-- **Node.js 18+** & **npm**  
-- **Angular CLI 19+** (pour `ng serve`)  
-- (Optionnel) **Docker** & **Docker Compose**
+Ce projet est une application web full-stack **professionnelle** de gestion des utilisateurs, des rôles et des permissions, avec journalisation (audit) de toutes les actions.  
+Elle permet à un administrateur de contrôler finement l’accès et les droits, et offre à chaque utilisateur une interface personnalisée selon son rôle.
 
 ---
 
-## Installation et exécution sans Docker
+## 🚀 Fonctionnalités
+
+- **Authentification & JWT**  
+  Inscription, connexion, stockage sécurisé du token JWT.
+- **Gestion des utilisateurs**  
+  ● Création, modification, activation/désactivation, suppression  
+  ● Affectation dynamique de rôles  
+- **Gestion des rôles & permissions**  
+  ● Création / édition / suppression de rôles  
+  ● Assignation et retrait de permissions  
+- **Audit & Logs**  
+  Suivi et filtrage des actions (API calls, création/modification, etc.)
+- **Interface adaptative**  
+  ● Vue **Admin** : accès complet  
+  ● Vue **User** : accès restreint (profil, tableau de bord)
+
+---
+
+## 🛠️ Technologies
+
+| Côté serveur                  | Côté client               | Base de données       |
+| ----------------------------- | ------------------------- | --------------------- |
+| Java 17, Spring Boot 3        | Angular 19, TypeScript 5  | H2 (dev) / MySQL (prod) |
+| Spring Security & JWT         | Angular Material          |                       |
+| Spring Data JPA, Hibernate    | RxJS                      |                       |
+| Maven                         | Node 18+, npm             |                       |
+
+---
+
+## ⚙️ Prérequis
+
+- Java 17 JDK  
+- Maven 3.6+  
+- Node.js 18+ & npm  
+- Angular CLI 19 (optionnel)  
+- (Optionnel) Docker & Docker Compose  
+
+---
+
+## 📥 Installation & Lancement
 
 ### 1. Cloner le dépôt
 ```bash
-git clone https://github.com/votre-organisation/user-management.git
+git clone https://github.com/votre-orga/user-management.git
 cd user-management
