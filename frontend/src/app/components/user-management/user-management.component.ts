@@ -1,9 +1,9 @@
+// frontend/src/app/components/user-management/user-management.component.ts
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { CommonModule } from '@angular/common';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,17 +12,22 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CommonModule } from '@angular/common';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+
+import { MatTableDataSource } from '@angular/material/table';
 import { User } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
-import { RoleService } from '../../services/role.service';
 import { Role } from '../../models/role.model';
-import { Subscription, interval } from 'rxjs';
+import { RoleService } from '../../services/role.service';
+import { UserDialogComponent } from './user-dialog.component';
+import { ConfirmationDialogComponent } from '../../shared/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-user-management',
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.css'],
+  standalone: true,
   imports: [
     CommonModule,
     MatCardModule,
@@ -34,21 +39,17 @@ import { Subscription, interval } from 'rxjs';
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
-    MatDialogModule,
-    MatSnackBarModule,
     MatChipsModule,
-    MatTooltipModule
-  ],
-  standalone: true
+    MatTooltipModule,
+    MatDialogModule,
+    MatSnackBarModule
+  ]
 })
 export class UserManagementComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'name', 'email', 'roles', 'active', 'actions'];
+  displayedColumns = ['id', 'name', 'email', 'roles', 'active', 'actions'];
   dataSource!: MatTableDataSource<User>;
-  users: User[] = [];
   roles: Role[] = [];
   isLoading = true;
-
-  private refreshSubscription?: Subscription;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -58,133 +59,94 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     private roleService: RoleService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.loadUsers();
     this.loadRoles();
+    this.loadUsers();
   }
 
-  ngOnDestroy(): void {
-    if (this.refreshSubscription) {
-      this.refreshSubscription.unsubscribe();
-    }
+  ngOnDestroy(): void {}
+
+  loadRoles(): void {
+    this.roleService.getAllRoles().subscribe({
+      next: r => this.roles = r,
+      error: () => {}
+    });
   }
 
   loadUsers(): void {
     this.isLoading = true;
     this.userService.getAllUsers().subscribe({
-      next: (users) => {
-        console.log('Users loaded:', users);
-        this.users = users;
-        this.dataSource = new MatTableDataSource(this.users);
+      next: users => {
+        this.dataSource = new MatTableDataSource(users);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
         this.isLoading = false;
       },
-      error: (error) => {
-        console.error('Error loading users:', error);
+      error: () => {
         this.snackBar.open('Error loading users', 'Close', { duration: 3000 });
         this.isLoading = false;
       }
     });
   }
 
-  loadRoles(): void {
-    this.roleService.getAllRoles().subscribe({
-      next: (roles) => {
-        this.roles = roles;
-      },
-      error: (error) => {
-        console.error('Error loading roles:', error);
-      }
-    });
-  }
-
   applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    const filter = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.dataSource.filter = filter;
+    if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
   }
 
   getRoleNames(roles: Role[]): string {
-    if (!roles || !roles.length) return 'None';
-    return roles.map(role => role.name).join(', ');
+    return roles.map(r => r.name).join(', ') || 'None';
+  }
+
+  openCreateUserDialog(): void {
+    const ref = this.dialog.open(UserDialogComponent, { data: { isEdit: false } });
+    ref.afterClosed().subscribe(created => {
+      if (created) this.loadUsers();
+    });
+  }
+
+  openEditUserDialog(user: User): void {
+    const ref = this.dialog.open(UserDialogComponent, { data: { isEdit: true, user } });
+    ref.afterClosed().subscribe(updated => {
+      if (updated) this.loadUsers();
+    });
+  }
+
+  confirmDeleteUser(user: User): void {
+    const ref = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Confirm Delete',
+        message: `Delete user "${user.name}"?`,
+        confirmText: 'Delete'
+      }
+    });
+    ref.afterClosed().subscribe(ok => {
+      if (!ok) return;
+      this.userService.deleteUser(user.id!).subscribe({
+        next: () => {
+          this.snackBar.open('User deleted', 'Close', { duration: 3000 });
+          this.loadUsers();
+        },
+        error: () => {
+          this.snackBar.open('Error deleting user', 'Close', { duration: 3000 });
+        }
+      });
+    });
   }
 
   toggleUserStatus(user: User): void {
     this.userService.toggleUserActive(user.id!).subscribe({
-      next: (updatedUser) => {
-        const index = this.users.findIndex(u => u.id === updatedUser.id);
-        if (index !== -1) {
-          this.users[index] = updatedUser;
-          this.dataSource.data = [...this.users];
-        }
-
-        const status = updatedUser.active ? 'activated' : 'deactivated';
-        this.snackBar.open(`User ${status} successfully`, 'Close', { duration: 3000 });
+      next: updated => {
+        const list = this.dataSource.data.map(u => u.id === updated.id ? updated : u);
+        this.dataSource.data = list;
+        this.snackBar.open(`User ${updated.active ? 'activated' : 'deactivated'}`, 'Close', { duration: 3000 });
       },
-      error: (error) => {
-        console.error('Error toggling user status:', error);
+      error: () => {
         this.snackBar.open('Error updating user status', 'Close', { duration: 3000 });
       }
     });
-  }
-
-  openCreateUserDialog(): void {
-
-    // const dialogRef = this.dialog.open(UserDialogComponent, {
-    //   width: '500px',
-    //   data: { isEdit: false }
-    // });
-
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.loadUsers();
-    //   }
-    // });
-  }
-
-  openEditUserDialog(user: User): void {
-    // const dialogRef = this.dialog.open(UserDialogComponent, {
-    //   width: '500px',
-    //   data: { isEdit: true, user: user }
-    // });
-
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.loadUsers();
-    //   }
-    // });
-  }
-
-  confirmDeleteUser(user: User): void {
-
-    // const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-    //   width: '400px',
-    //   data: {
-    //     title: 'Confirm Delete',
-    //     message: `Are you sure you want to delete user "${user.name}"?`,
-    //     confirmText: 'Delete'
-    //   }
-    // });
-
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.userService.deleteUser(user.id!).subscribe({
-    //       next: () => {
-    //         this.snackBar.open('User deleted successfully', 'Close', { duration: 3000 });
-    //         this.loadUsers();
-    //       },
-    //       error: (error) => {
-    //         console.error('Error deleting user:', error);
-    //         this.snackBar.open('Error deleting user', 'Close', { duration: 3000 });
-    //       }
-    //     });
-    //   }
-    // });
   }
 }
