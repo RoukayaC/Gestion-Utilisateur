@@ -1,3 +1,4 @@
+// frontend/src/app/components/user-management/user-dialog.component.ts
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -8,86 +9,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
+
 import { UserService } from '../../services/user.service';
 import { RoleService } from '../../services/role.service';
 import { Role } from '../../models/role.model';
-import { User, CreateUserRequest } from '../../models/user.model';
+import { CreateUserRequest, User } from '../../models/user.model';
 
 @Component({
   selector: 'app-user-dialog',
-  template: `
-    <h2 mat-dialog-title>{{ data.isEdit ? 'Edit User' : 'Add New User' }}</h2>
-
-    <mat-dialog-content>
-      <form [formGroup]="userForm" class="user-form">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Name</mat-label>
-          <input matInput formControlName="name" placeholder="Enter full name">
-          <mat-error *ngIf="userForm.get('name')?.hasError('required')">
-            Name is required
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
-          <input matInput formControlName="email" placeholder="Enter email address">
-          <mat-error *ngIf="userForm.get('email')?.hasError('required')">
-            Email is required
-          </mat-error>
-          <mat-error *ngIf="userForm.get('email')?.hasError('email')">
-            Please enter a valid email
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width" *ngIf="!data.isEdit">
-          <mat-label>Password</mat-label>
-          <input matInput type="password" formControlName="password" placeholder="Enter password">
-          <mat-error *ngIf="userForm.get('password')?.hasError('required')">
-            Password is required
-          </mat-error>
-          <mat-error *ngIf="userForm.get('password')?.hasError('minlength')">
-            Password must be at least 6 characters
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Roles</mat-label>
-          <mat-select formControlName="roles" multiple>
-            <mat-option *ngFor="let role of roles" [value]="role.name">
-              {{ role.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </form>
-    </mat-dialog-content>
-
-    <mat-dialog-actions align="end">
-      <button mat-button (click)="onCancel()">Cancel</button>
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="onSave()"
-        [disabled]="userForm.invalid || isLoading">
-        {{ data.isEdit ? 'Update' : 'Create' }}
-      </button>
-    </mat-dialog-actions>
-  `,
-  styles: [`
-    .user-form {
-      display: flex;
-      flex-direction: column;
-      min-width: 400px;
-    }
-
-    .full-width {
-      width: 100%;
-      margin-bottom: 16px;
-    }
-
-    mat-dialog-content {
-      padding: 20px 0;
-    }
-  `],
+  templateUrl: './user-dialog.component.html',
+  styleUrls: ['./user-dialog.component.css'],
+  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -97,8 +29,7 @@ import { User, CreateUserRequest } from '../../models/user.model';
     MatInputModule,
     MatSelectModule,
     MatCheckboxModule
-  ],
-  standalone: true
+  ]
 })
 export class UserDialogComponent implements OnInit {
   userForm!: FormGroup;
@@ -106,7 +37,7 @@ export class UserDialogComponent implements OnInit {
   isLoading = false;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     private userService: UserService,
     private roleService: RoleService,
     private snackBar: MatSnackBar,
@@ -119,57 +50,61 @@ export class UserDialogComponent implements OnInit {
     this.loadRoles();
   }
 
-  initForm(): void {
-    this.userForm = this.formBuilder.group({
+  private initForm(): void {
+    const existingRoles = this.data.user?.roles || [];
+
+    this.userForm = this.fb.group({
       name: [this.data.user?.name || '', Validators.required],
       email: [this.data.user?.email || '', [Validators.required, Validators.email]],
-      password: ['', this.data.isEdit ? [] : [Validators.required, Validators.minLength(6)]],
-      roles: [ this.data.user?.roles || ['USER'] ]
+      password: [
+        '',
+        this.data.isEdit
+          ? []
+          : [Validators.required, Validators.minLength(6)]
+      ],
+      roles: [ existingRoles, Validators.required ]
     });
   }
 
-  loadRoles(): void {
+  private loadRoles(): void {
     this.roleService.getAllRoles().subscribe({
-      next: (roles) => {
-        this.roles = roles;
-      },
-      error: (error) => {
-        console.error('Error loading roles:', error);
+      next: roles => this.roles = roles,
+      error: err => {
+        console.error('Error loading roles', err);
         this.snackBar.open('Error loading roles', 'Close', { duration: 3000 });
       }
     });
   }
 
   onSave(): void {
-    if (this.userForm.invalid) {
-      return;
-    }
+    if (this.userForm.invalid) return;
 
     this.isLoading = true;
-    const formValue = this.userForm.value;
+    const form = this.userForm.value;
 
-    const userRequest: CreateUserRequest = {
-      name: formValue.name,
-      email: formValue.email,
-      password: formValue.password,
-      roles: formValue.roles
+    const payload: CreateUserRequest = {
+      name: form.name,
+      email: form.email,
+      password: form.password,
+      roles: form.roles
     };
 
-    const operation = this.data.isEdit
-      ? this.userService.updateUser(this.data.user!.id!, userRequest)
-      : this.userService.createUser(userRequest);
+    const op$ = this.data.isEdit
+      ? this.userService.updateUser(this.data.user!.id!, payload)
+      : this.userService.createUser(payload);
 
-    operation.subscribe({
-      next: (user) => {
-        this.isLoading = false;
-        const action = this.data.isEdit ? 'updated' : 'created';
-        this.snackBar.open(`User ${action} successfully`, 'Close', { duration: 3000 });
+    op$.subscribe({
+      next: () => {
+        this.snackBar.open(
+          `User ${this.data.isEdit ? 'updated' : 'created'} successfully`,
+          'Close', { duration: 3000 }
+        );
         this.dialogRef.close(true);
       },
-      error: (error) => {
-        this.isLoading = false;
-        console.error('Error saving user:', error);
+      error: err => {
+        console.error('Error saving user', err);
         this.snackBar.open('Error saving user', 'Close', { duration: 3000 });
+        this.isLoading = false;
       }
     });
   }

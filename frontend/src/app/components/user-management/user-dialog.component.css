@@ -1,0 +1,15 @@
+/* user-dialog.component.css */
+.user-form {
+  display: flex;
+  flex-direction: column;
+  min-width: 400px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+mat-dialog-content {
+  padding: 20px 0;
+}
