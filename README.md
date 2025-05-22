@@ -2,7 +2,7 @@
 
 ## 🔍 Description
 
-Ce projet est une application web full-stack **professionnelle** de gestion des utilisateurs, des rôles et des permissions, avec journalisation (audit) de toutes les actions.  
+Ce projet est une application web full-stack de gestion des utilisateurs, des rôles et des permissions, avec journalisation (audit) de toutes les actions.  
 Elle permet à un administrateur de contrôler finement l’accès et les droits, et offre à chaque utilisateur une interface personnalisée selon son rôle.
 
 ---
