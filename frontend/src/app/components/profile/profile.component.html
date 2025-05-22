@@ -39,6 +39,17 @@
               </mat-chip>
             </span>
           </mat-list-item>
+
+          <mat-list-item *ngIf="permissionNames.length">
+            <span matListItemTitle>Permissions</span>
+            <span matListItemLine>
+              <mat-chip-list>
+                <mat-chip *ngFor="let perm of permissionNames" selected>
+                  {{ perm }}
+                </mat-chip>
+              </mat-chip-list>
+            </span>
+          </mat-list-item>
         </mat-list>
       </div>
 
