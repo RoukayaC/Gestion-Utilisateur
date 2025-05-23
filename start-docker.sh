@@ -4,7 +4,7 @@ echo "🚀 Démarrage de l'application User Management avec Docker..."
 
 # Nettoyer les anciens containers/images (optionnel)
 echo "🧹 Nettoyage des anciens containers..."
-docker-compose down -v --remove-orphans
+docker-compose down --remove-orphans
 
 # Construire et démarrer les services
 echo "🔨 Construction et démarrage des services..."
