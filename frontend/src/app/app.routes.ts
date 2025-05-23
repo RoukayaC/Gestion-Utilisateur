@@ -6,6 +6,7 @@ import { UserManagementComponent } from './components/user-management/user-manag
 import { RoleManagementComponent } from './components/role-management/role-management.component';
 import { PermissionManagementComponent } from './components/permission-management/permission-management.component';
 import { AuditLogsComponent } from './components/audit-logs/audit-logs.component';
+import { ProfileComponent } from './components/profile/profile.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 import { AuthGuard } from './guards/auth.guard';
 
@@ -16,6 +17,11 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent,
     canActivate: [AuthGuard],
   },
   {
