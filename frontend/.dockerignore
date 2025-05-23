@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.angular/
+.git/
+.gitignore
+*.md
+Dockerfile
+.dockerignore
+coverage/
+.nyc_output/
+e2e/
+docs/
