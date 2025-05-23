@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -65,8 +66,47 @@ public class UserService {
     }
 
     @Transactional
+    public UserDto updateProfile(String email, Map<String, String> profileData) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+
+        if (profileData.containsKey("name")) {
+            user.setName(profileData.get("name"));
+        }
+
+        
+        if (profileData.containsKey("email") && !user.getEmail().equals(profileData.get("email"))) {
+            String newEmail = profileData.get("email");
+            if (userRepository.existsByEmail(newEmail)) {
+                throw new IllegalArgumentException("Email is already in use");
+            }
+            user.setEmail(newEmail);
+        }
+
+        User updatedUser = userRepository.save(user);
+        auditService.logAction("PROFILE_UPDATED", "Profile updated for user: " + user.getEmail());
+        
+        return convertToDto(updatedUser);
+    }
+
+    @Transactional
+    public boolean changePassword(String email, String currentPassword, String newPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            return false;
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        
+        auditService.logAction("PASSWORD_CHANGED", "Password changed for user: " + user.getEmail());
+        return true;
+    }
+
+    @Transactional
     public UserDto createUser(CreateUserRequest request) {
-        // Add debug output
         System.out.println("Creating user with email: " + request.getEmail());
         if (request.getRoles() != null) {
             System.out.println("Roles requested: " + request.getRoles());
@@ -84,7 +124,6 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setActive(true);
 
-        // Assign roles
         Set<Role> roles = new HashSet<>();
         if (request.getRoles() != null && !request.getRoles().isEmpty()) {
             for (String roleName : request.getRoles()) {

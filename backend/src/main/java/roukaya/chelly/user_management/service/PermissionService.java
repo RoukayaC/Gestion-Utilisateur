@@ -30,6 +30,11 @@ public class PermissionService {
 
     @Transactional
     public Permission createPermission(Permission permission) {
+        // Check if permission with same name already exists
+        if (permissionRepository.findByName(permission.getName()).isPresent()) {
+            throw new IllegalArgumentException("Permission with name '" + permission.getName() + "' already exists");
+        }
+        
         Permission savedPermission = permissionRepository.save(permission);
         auditService.logAction("PERMISSION_CREATED", "Permission created: " + permission.getName());
         return savedPermission;
@@ -39,6 +44,13 @@ public class PermissionService {
     public Permission updatePermission(Long id, Permission permissionDetails) {
         Permission permission = permissionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Permission not found with id: " + id));
+        
+        // Check if new name conflicts with existing permission 
+        if (!permission.getName().equals(permissionDetails.getName())) {
+            if (permissionRepository.findByName(permissionDetails.getName()).isPresent()) {
+                throw new IllegalArgumentException("Permission with name '" + permissionDetails.getName() + "' already exists");
+            }
+        }
         
         permission.setName(permissionDetails.getName());
         permission.setDescription(permissionDetails.getDescription());

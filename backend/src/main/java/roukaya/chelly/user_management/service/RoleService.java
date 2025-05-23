@@ -42,6 +42,17 @@ public class RoleService {
 
     @Transactional
     public Role createRole(Role role) {
+        // Handle permissions if provided
+        if (role.getPermissions() != null && !role.getPermissions().isEmpty()) {
+            Set<Permission> managedPermissions = new HashSet<>();
+            for (Permission permission : role.getPermissions()) {
+                Permission managedPermission = permissionRepository.findById(permission.getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Permission not found with id: " + permission.getId()));
+                managedPermissions.add(managedPermission);
+            }
+            role.setPermissions(managedPermissions);
+        }
+        
         Role savedRole = roleRepository.save(role);
         auditService.logAction("ROLE_CREATED", "Role created: " + role.getName());
         return savedRole;
@@ -54,6 +65,17 @@ public class RoleService {
         
         role.setName(roleDetails.getName());
         role.setDescription(roleDetails.getDescription());
+        
+        // Handle permissions update
+        if (roleDetails.getPermissions() != null) {
+            Set<Permission> managedPermissions = new HashSet<>();
+            for (Permission permission : roleDetails.getPermissions()) {
+                Permission managedPermission = permissionRepository.findById(permission.getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Permission not found with id: " + permission.getId()));
+                managedPermissions.add(managedPermission);
+            }
+            role.setPermissions(managedPermissions);
+        }
         
         Role updatedRole = roleRepository.save(role);
         auditService.logAction("ROLE_UPDATED", "Role updated: " + role.getName());
