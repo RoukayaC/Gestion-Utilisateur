@@ -38,7 +38,6 @@ services:
 # Volumes
 volumes:
   backend_data:
-    driver: local
 
 # Networks
 networks:
