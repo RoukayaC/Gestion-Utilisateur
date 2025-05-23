@@ -4,6 +4,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatListModule } from '@angular/material/list';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { forkJoin } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
@@ -22,7 +25,10 @@ import { ActionHistory } from '../../models/action-history.model';
     MatCardModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatListModule
+    MatListModule,
+    MatChipsModule,
+    MatTableModule,
+    MatPaginatorModule
   ],
 })
 export class DashboardComponent implements OnInit {
@@ -30,9 +36,14 @@ export class DashboardComponent implements OnInit {
   userCount = 0;
   roleCount = 0;
   permissionCount = 0;
+  userRoles: string[] = [];
+  userPermissions: string[] = [];
   recentActivities: ActionHistory[] = [];
+  auditLogs: ActionHistory[] = [];
   isAdmin = false;
   isLoading = true;
+  canViewLogs = false;
+  displayedColumns: string[] = ['date', 'user', 'action', 'details'];
 
   constructor(
     private authService: AuthService,
@@ -47,13 +58,15 @@ export class DashboardComponent implements OnInit {
     this.isAdmin = this.authService.hasRole('ADMIN');
 
     if (this.isAdmin) {
-      this.loadDashboardData();
+      this.loadAdminDashboardData();
     } else {
-      this.isLoading = false;
+      this.loadUserDashboardData();
     }
   }
 
-  private loadDashboardData(): void {
+  private loadAdminDashboardData(): void {
+    this.canViewLogs = true; 
+    
     forkJoin({
       users: this.userService.getAllUsers(),
       roles: this.roleService.getAllRoles(),
@@ -69,10 +82,71 @@ export class DashboardComponent implements OnInit {
           .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
           .slice(0, 5);
 
+        this.auditLogs = activities
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .slice(0, 10);
+
         this.isLoading = false;
       },
       error: err => {
-        console.error('Error loading dashboard data', err);
+        console.error('Error loading admin dashboard data', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private loadUserDashboardData(): void {
+    if (this.currentUser) {
+      this.userRoles = Array.isArray(this.currentUser.roles) 
+        ? this.currentUser.roles 
+        : Object.values(this.currentUser.roles || {});
+
+      // Load all roles to get permissions
+      this.roleService.getAllRoles().subscribe({
+        next: (allRoles) => {
+          const userPermissions = new Set<string>();
+          
+          allRoles.forEach(role => {
+            if (this.userRoles.includes(role.name)) {
+              role.permissions.forEach(permission => {
+                userPermissions.add(permission.name);
+              });
+            }
+          });
+          
+          this.userPermissions = Array.from(userPermissions);
+          this.permissionCount = this.userPermissions.length;
+          this.roleCount = this.userRoles.length;
+          
+          // Check if user has VIEW_AUDIT_LOGS permission
+          this.canViewLogs = this.userPermissions.includes('VIEW_AUDIT_LOGS');
+          
+          if (this.canViewLogs) {
+            this.loadAuditLogs();
+          } else {
+            this.isLoading = false;
+          }
+        },
+        error: (err) => {
+          console.error('Error loading user dashboard data', err);
+          this.isLoading = false;
+        }
+      });
+    } else {
+      this.isLoading = false;
+    }
+  }
+
+  private loadAuditLogs(): void {
+    this.auditService.getAllActions().subscribe({
+      next: (logs) => {
+        this.auditLogs = logs
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .slice(0, 10); // Show last 10 logs
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading audit logs', err);
         this.isLoading = false;
       }
     });

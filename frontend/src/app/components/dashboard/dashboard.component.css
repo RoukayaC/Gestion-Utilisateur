@@ -45,3 +45,121 @@
 .recent-activity {
   margin-top: 30px;
 }
+
+.user-info {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-card {
+  background-color: #fafafa;
+}
+
+.info-card mat-card-title {
+  color: #3f51b5;
+  font-size: 18px;
+}
+
+.audit-logs-section {
+  margin-top: 30px;
+}
+
+.logs-card {
+  background-color: #fafafa;
+}
+
+.logs-card mat-card-header {
+  background-color: #3f51b5;
+  color: white;
+  margin: -16px -16px 16px -16px;
+  padding: 16px;
+}
+
+.logs-card mat-card-title {
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logs-card mat-card-title mat-icon {
+  color: white;
+}
+
+.table-container {
+  overflow-x: auto;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.logs-table {
+  width: 100%;
+}
+
+.details-cell {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-logs {
+  margin-top: 30px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  margin-bottom: 16px;
+  color: rgba(0, 0, 0, 0.26);
+}
+
+.empty-state h3 {
+  margin: 16px 0 8px 0;
+  font-weight: 400;
+}
+
+mat-chip-set {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+mat-chip {
+  margin: 4px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+@media (max-width: 768px) {
+  .stats-container {
+    flex-direction: column;
+  }
+  
+  .stat-card {
+    min-width: 100%;
+  }
+  
+  .details-cell {
+    max-width: 150px;
+  }
+  
+  .table-container {
+    font-size: 14px;
+  }
+}
