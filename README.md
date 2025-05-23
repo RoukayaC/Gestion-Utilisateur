@@ -617,6 +617,7 @@ git push origin feature/amazing-feature
 
 
 
+
 ### 📋 Changelog
 
 #### v1.0.0 (2024-01-XX)
