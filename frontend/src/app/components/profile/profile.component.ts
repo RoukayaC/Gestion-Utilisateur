@@ -12,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
+import { RoleService } from '../../services/role.service';
 
 @Component({
   selector: 'app-profile',
@@ -37,9 +38,13 @@ export class ProfileComponent implements OnInit {
   user: any;
   isLoading = true;
   passwordForm!: FormGroup;
+  userRoles: string[] = [];
+  userPermissions: string[] = [];
+  isChangingPassword = false;
 
   constructor(
     private authService: AuthService,
+    private roleService: RoleService,
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar
   ) { }
@@ -72,16 +77,42 @@ export class ProfileComponent implements OnInit {
   loadUserProfile(): void {
     this.isLoading = true;
     this.user = this.authService.getCurrentUser();
-    this.isLoading = false;
+    
+    if (this.user) {
+      // Set user roles
+      this.userRoles = Array.isArray(this.user.roles) 
+        ? this.user.roles 
+        : Object.values(this.user.roles || {});
+
+      // Load all roles to get permissions
+      this.roleService.getAllRoles().subscribe({
+        next: (allRoles) => {
+          // Find permissions 
+          const userPermissions = new Set<string>();
+          
+          allRoles.forEach(role => {
+            if (this.userRoles.includes(role.name)) {
+              role.permissions.forEach(permission => {
+                userPermissions.add(permission.name);
+              });
+            }
+          });
+          
+          this.userPermissions = Array.from(userPermissions);
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Error loading user permissions', err);
+          this.isLoading = false;
+        }
+      });
+    } else {
+      this.isLoading = false;
+    }
   }
 
   getRoleNames(): string {
-    if (this.user && this.user.roles) {
-      return Array.isArray(this.user.roles)
-        ? this.user.roles.join(', ')
-        : Object.values(this.user.roles).join(', ');
-    }
-    return '';
+    return this.userRoles.length > 0 ? this.userRoles.join(', ') : 'No roles assigned';
   }
 
   changePassword(): void {
@@ -89,8 +120,11 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
+    this.isChangingPassword = true;
 
+    //  password 
     setTimeout(() => {
+      this.isChangingPassword = false;
       this.snackBar.open('Password changed successfully', 'Close', { duration: 3000 });
       this.passwordForm.reset();
     }, 1000);

@@ -27,11 +27,6 @@
           </mat-list-item>
 
           <mat-list-item>
-            <span matListItemTitle>Roles</span>
-            <span matListItemLine>{{ getRoleNames() }}</span>
-          </mat-list-item>
-
-          <mat-list-item>
             <span matListItemTitle>Status</span>
             <span matListItemLine>
               <mat-chip [color]="user.active ? 'primary' : 'warn'" selected>
@@ -39,60 +34,87 @@
               </mat-chip>
             </span>
           </mat-list-item>
-
-          <mat-list-item *ngIf="permissionNames.length">
-            <span matListItemTitle>Permissions</span>
-            <span matListItemLine>
-              <mat-chip-list>
-                <mat-chip *ngFor="let perm of permissionNames" selected>
-                  {{ perm }}
-                </mat-chip>
-              </mat-chip-list>
-            </span>
-          </mat-list-item>
         </mat-list>
+
+        <!-- Roles Section -->
+        <div class="info-section">
+          <h3>My Roles</h3>
+          <div *ngIf="userRoles.length > 0; else noRoles">
+            <mat-chip-set>
+              <mat-chip *ngFor="let role of userRoles" selected color="primary">
+                {{ role }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+          <ng-template #noRoles>
+            <p class="no-data">No roles assigned</p>
+          </ng-template>
+        </div>
+
+        <!-- Permissions Section -->
+        <div class="info-section">
+          <h3>My Permissions</h3>
+          <div *ngIf="userPermissions.length > 0; else noPermissions">
+            <mat-chip-set>
+              <mat-chip *ngFor="let permission of userPermissions" selected color="accent">
+                {{ permission }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+          <ng-template #noPermissions>
+            <p class="no-data">No permissions available</p>
+          </ng-template>
+        </div>
       </div>
 
       <mat-divider class="my-3"></mat-divider>
 
-      <h3>Change Password</h3>
-      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="password-form">
-        <mat-form-field appearance="outline">
-          <mat-label>Current Password</mat-label>
-          <input matInput type="password" formControlName="currentPassword" placeholder="Enter current password">
-          <mat-error *ngIf="passwordForm.get('currentPassword')?.hasError('required')">
-            Current password is required
-          </mat-error>
-        </mat-form-field>
+      <div class="password-section">
+        <h3>Change Password</h3>
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="password-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Current Password</mat-label>
+            <input matInput type="password" formControlName="currentPassword" placeholder="Enter current password">
+            <mat-error *ngIf="passwordForm.get('currentPassword')?.hasError('required')">
+              Current password is required
+            </mat-error>
+          </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>New Password</mat-label>
-          <input matInput type="password" formControlName="newPassword" placeholder="Enter new password">
-          <mat-error *ngIf="passwordForm.get('newPassword')?.hasError('required')">
-            New password is required
-          </mat-error>
-          <mat-error *ngIf="passwordForm.get('newPassword')?.hasError('minlength')">
-            Password must be at least 6 characters
-          </mat-error>
-        </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>New Password</mat-label>
+            <input matInput type="password" formControlName="newPassword" placeholder="Enter new password">
+            <mat-error *ngIf="passwordForm.get('newPassword')?.hasError('required')">
+              New password is required
+            </mat-error>
+            <mat-error *ngIf="passwordForm.get('newPassword')?.hasError('minlength')">
+              Password must be at least 6 characters
+            </mat-error>
+          </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Confirm New Password</mat-label>
-          <input matInput type="password" formControlName="confirmPassword" placeholder="Confirm new password">
-          <mat-error *ngIf="passwordForm.get('confirmPassword')?.hasError('required')">
-            Please confirm your password
-          </mat-error>
-          <mat-error *ngIf="passwordForm.get('confirmPassword')?.hasError('passwordMismatch')">
-            Passwords do not match
-          </mat-error>
-        </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Confirm New Password</mat-label>
+            <input matInput type="password" formControlName="confirmPassword" placeholder="Confirm new password">
+            <mat-error *ngIf="passwordForm.get('confirmPassword')?.hasError('required')">
+              Please confirm your password
+            </mat-error>
+            <mat-error *ngIf="passwordForm.get('confirmPassword')?.hasError('passwordMismatch')">
+              Passwords do not match
+            </mat-error>
+          </mat-form-field>
 
-        <div class="password-form-actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="passwordForm.invalid">
-            Change Password
-          </button>
-        </div>
-      </form>
+          <div class="password-form-actions">
+            <button 
+              mat-raised-button 
+              color="primary" 
+              type="submit" 
+              [disabled]="passwordForm.invalid || isChangingPassword">
+              <mat-spinner *ngIf="isChangingPassword" diameter="20"></mat-spinner>
+              <span *ngIf="!isChangingPassword">Change Password</span>
+              <span *ngIf="isChangingPassword">Changing...</span>
+            </button>
+          </div>
+        </form>
+      </div>
     </mat-card-content>
   </mat-card>
 </div>

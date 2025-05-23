@@ -20,11 +20,48 @@
   color: #3f51b5;
 }
 
+.info-section {
+  margin: 20px 0;
+  width: 100%;
+}
+
+.info-section h3 {
+  color: #3f51b5;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.no-data {
+  color: rgba(0, 0, 0, 0.54);
+  font-style: italic;
+}
+
+mat-chip-set {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+mat-chip {
+  margin: 4px;
+}
+
+.password-section {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.password-section h3 {
+  color: #3f51b5;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
 .password-form {
   display: flex;
   flex-direction: column;
-  max-width: 400px;
-  margin: 0 auto;
+  gap: 16px;
 }
 
 .password-form-actions {
@@ -34,7 +71,7 @@
 }
 
 .my-3 {
-  margin: 20px 0;
+  margin: 30px 0;
 }
 
 .loading-container {
@@ -43,4 +80,25 @@
   align-items: center;
   justify-content: center;
   margin: 20px 0;
+}
+
+mat-list {
+  width: 100%;
+  max-width: 400px;
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 10px;
+  }
+  
+  .password-form {
+    width: 100%;
+  }
+  
+  .avatar-icon {
+    width: 80px;
+    height: 80px;
+    font-size: 80px;
+  }
 }
