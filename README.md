@@ -52,3 +52,26 @@ Elle permet à un administrateur de contrôler finement l’accès et les droits
 ```bash
 git clone https://github.com/votre-orga/user-management.git
 cd user-management
+
+
+---
+
+## 🐳 Dockerisation
+
+### 1. Lancer l'application avec Docker
+
+```bash
+chmod +x start-docker.sh
+./start-docker.sh
+
+### 2. Arrêter les services
+
+```bash
+docker-compose down
+```
+
+### 3. Voir les logs
+
+```bash
+docker-compose logs -f
+```
